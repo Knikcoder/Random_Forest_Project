@@ -1,0 +1,56 @@
+import pandas as pd
+import numpy as np
+features=pd.read_csv('GestureData.csv')
+features.head(200)
+features=features.dropna()
+features.head()
+features.info()
+y = features["command"].values
+X = features.drop(labels=["command"],axis=1)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=44)
+from sklearn.ensemble import RandomForestClassifier
+rf_model = RandomForestClassifier(n_estimators=50, max_features="auto", random_state=44)
+rf_model.fit(X_train, y_train)
+predictions = rf_model.predict(X_test)
+predictions
+from sklearn import metrics
+print("Accuracy:", metrics.accuracy_score(y_test,predictions))
+from sklearn.metrics import confusion_matrix  
+cm= confusion_matrix(y_test,predictions) 
+from sklearn.metrics import classification_report, confusion_matrix,accuracy_score
+print(confusion_matrix(y_test,predictions))
+print(classification_report(y_test,predictions))
+print(accuracy_score(y_test,predictions))
+clf = RandomForestClassifier(n_estimators=100, random_state=0)
+clf.fit(X_train, y_train)
+feature_scores = pd.Series(clf.feature_importances_, index=X_train.columns).sort_values(ascending=False)
+
+feature_scores
+sns.barplot(x=feature_scores, y=feature_scores.index)
+
+plt.xlabel('Feature Importance Score')
+
+plt.ylabel('Features')
+
+plt.title("Visualizing Important Features")
+
+plt.show()
+from sklearn.metrics import classification_report
+
+print(classification_report(y_test, predictions))
+clf.estimators_
+from sklearn import tree
+plt.figure(figsize=(15,10))
+tree.plot_tree(clf.estimators_[2],filled=True)
+plt.figure(figsize=(15,10))
+tree.plot_tree(clf.estimators_[1],filled=True)
+plt.figure(figsize=(15,10))
+tree.plot_tree(clf.estimators_[29],filled=True)
+plt.figure(figsize=(15,10))
+for i in range(len(clf.estimators_)):
+    print(tree.plot_tree(clf.estimators_[i],filled=True))
+for i in range(len(clf.estimators_)):
+    print(tree.export_text(clf.estimators_[i]))
